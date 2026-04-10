@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agai Actions · 06 · Масштабирование</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #1c1917;
+  --bg-nav:    #232120;
+  --bg-card:   #262320;
+  --bg-card2:  #2d2a27;
+  --bg-inset:  #1a1816;
+  --gold:      #c9a96e;
+  --gold-lt:   #dfc08a;
+  --gold-pale: #eedcb8;
+  --gold-glow: rgba(201,169,110,0.10);
+  --gold-line: rgba(201,169,110,0.22);
+  --text:      #f0e8da;
+  --text-2:    #cdc0a8;
+  --text-3:    #8a7d6e;
+  --text-4:    #4a443c;
+  --div:       rgba(255,255,255,0.06);
+  --r:         3px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 15px 32px; border-bottom: 1px solid var(--div);
+  position: sticky; top: 0; z-index: 300; background: var(--bg);
+}
+.hdr-logo { font-size: 10.5px; letter-spacing: .2em; color: var(--text-3); text-transform: uppercase; line-height: 1.5; }
+.hdr-badge { font-size: 10px; letter-spacing: .18em; color: var(--gold); text-transform: uppercase; border: 1px solid var(--gold-line); padding: 5px 14px; border-radius: var(--r); white-space: nowrap; }
+
+/* TABS */
+.nav-wrap { position: sticky; top: 57px; z-index: 200; background: var(--bg-nav); border-bottom: 1px solid var(--div); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav-wrap::-webkit-scrollbar { display: none; }
+.nav { display: flex; padding: 0 24px; min-width: max-content; }
+.tab { background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--text-3); padding: 16px 20px; cursor: pointer; white-space: nowrap; position: relative; transition: color .2s; }
+.tab::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 1.5px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform .25s cubic-bezier(.4,0,.2,1); }
+.tab.on { color: var(--gold); }
+.tab.on::after { transform: scaleX(1); }
+.tab:hover:not(.on) { color: var(--text-2); }
+
+/* HERO */
+.hero { padding: 56px 32px 48px; border-bottom: 1px solid var(--div); background: var(--bg); }
+.eyebrow { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 7vw, 56px); font-weight: 300; line-height: 1.1; color: var(--text); margin-bottom: 20px; }
+.hero-title em { font-style: italic; color: var(--gold-lt); }
+.hero-desc { font-size: 13px; color: var(--text-2); line-height: 1.85; max-width: 560px; }
+
+/* SECTIONS */
+.sec { display: none; padding: 0 32px 72px; background: var(--bg); }
+.sec.on { display: block; animation: fadeUp .28s ease both; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* SEC HEADER */
+.sec-hd { padding: 44px 0 28px; border-bottom: 1px solid var(--div); margin-bottom: 32px; }
+.sec-eye { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--text-4); margin-bottom: 10px; }
+.sec-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--text); line-height: 1.15; }
+.sec-title em { font-style: italic; color: var(--gold-lt); }
+
+/* GOAL HIGHLIGHT */
+.goal-hl { background: var(--bg-card); border: 1px solid var(--gold-line); border-radius: var(--r); padding: 32px 28px; margin-bottom: 10px; }
+.lbl { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; }
+.big { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; color: var(--gold-pale); line-height: 1; margin-bottom: 8px; }
+.sub-text { font-size: 13px; color: var(--text-2); }
+
+/* LIST CARD */
+.lc { background: var(--bg-card); border: 1px solid var(--div); border-radius: var(--r); padding: 26px 28px; margin-bottom: 10px; }
+.lc .lbl { margin-bottom: 16px; }
+.lc ul { list-style: none; }
+.lc li { display:flex; gap:14px; align-items:baseline; padding:9px 0; border-bottom:1px solid var(--div); color:var(--text-2); font-size:13px; }
+.lc li:last-child { border:none; }
+.lc li::before { content:'—'; color:var(--gold); flex-shrink:0; font-size:11px; }
+.lc li strong { color:var(--text); font-weight:500; }
+
+/* SCENARIO CARDS */
+.sc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:10px; }
+@media(max-width:680px){ .sc-grid { grid-template-columns:1fr; } }
+.sc { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); overflow:hidden; transition:border-color .2s; }
+.sc:hover { border-color:var(--gold-line); }
+.sc-top { padding:20px 24px 16px; border-bottom:1px solid var(--div); display:flex; gap:14px; align-items:center; }
+.sc-badge { width:28px;height:28px; background:var(--gold-glow); border:1px solid var(--gold-line); border-radius:2px; display:flex;align-items:center;justify-content:center; font-size:11px; color:var(--gold); font-weight:500; flex-shrink:0; }
+.sc-name { font-size:13px; color:var(--text); font-weight:400; }
+.sc-sub  { font-size:11px; color:var(--text-3); margin-top:2px; }
+.sc-rows { padding:18px 24px; }
+.sc-row { display:flex; justify-content:space-between; align-items:baseline; padding:7px 0; border-bottom:1px solid var(--div); }
+.sc-row:last-child { border:none; }
+.sc-rk { font-size:11.5px; color:var(--text-3); }
+.sc-rv { font-size:12px; color:var(--text-2); }
+.sc-divider { height:1px; background:var(--div); margin: 4px 0; }
+.sc-profit { margin-top:16px; padding:14px 18px; background:var(--bg-inset); border-left:2px solid var(--gold); border-radius:2px; }
+.sc-plbl { font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--text-3); margin-bottom:4px; }
+.sc-pval { font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:300; color:var(--gold-pale); line-height:1; }
+
+/* FORMULA BOX */
+.formula { background:var(--bg-inset); border:1px solid var(--div); border-radius:var(--r); padding:18px 22px; margin-bottom:10px; }
+.formula-inner { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.f-item { font-size:11.5px; color:var(--text-2); }
+.f-op { font-size:14px; color:var(--text-4); }
+.f-result { font-family:'Cormorant Garamond',serif; font-size:20px; color:var(--gold-pale); }
+
+/* BUDGET TABLE */
+.bt-wrap { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:10px; }
+.bt { width:100%; border-collapse:collapse; min-width:480px; }
+.bt th { padding:12px 18px; text-align:right; font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-3); background:var(--bg-card2); border-bottom:1px solid var(--div); font-weight:500; white-space:nowrap; }
+.bt th:first-child { text-align:left; }
+.bt td { padding:10px 18px; text-align:right; font-size:12px; color:var(--text-2); border-bottom:1px solid var(--div); white-space:nowrap; }
+.bt td:first-child { text-align:left; color:var(--text); white-space:normal; min-width:160px; }
+.bt tr:last-child td { border:none; }
+.bt .g td { background:var(--bg-card2); font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-4); padding:8px 18px; }
+.bt .sub td { color:var(--text-3); font-size:11.5px; }
+.bt .sub td:first-child { color:var(--text-3); padding-left:28px; }
+.bt .tot td { background:var(--bg-card2); border-top:1px solid var(--gold-line); color:var(--text); font-weight:500; }
+.bt .prf td { background:var(--gold-glow); color:var(--gold-pale); font-weight:500; font-size:13px; }
+.bt .prf td:first-child { color:var(--gold-pale); }
+
+/* CAR DETAIL */
+.car-detail { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); padding:24px 28px; margin-bottom:10px; }
+.car-detail .lbl { margin-bottom:16px; }
+.cdr { display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--div); font-size:12.5px; }
+.cdr:last-child { border:none; }
+.cdr-k { color:var(--text-3); }
+.cdr-v { color:var(--text-2); }
+.cdr-total { display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding:14px 18px; background:var(--bg-inset); border-left:2px solid var(--gold); border-radius:2px; }
+.cdr-tk { font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--text-3); }
+.cdr-tv { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:var(--gold-pale); line-height:1; }
+
+/* CARS SCALE */
+.cars-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:10px; }
+@media(max-width:680px){ .cars-grid { grid-template-columns:1fr; } }
+.car { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); padding:26px 20px; text-align:center; }
+.car-icon { font-size:20px; margin-bottom:10px; opacity:.8; }
+.car-lbl { font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-3); margin-bottom:8px; }
+.car-val { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:var(--gold-pale); }
+
+/* HIRE */
+.hire-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:10px; }
+@media(max-width:680px){ .hire-grid { grid-template-columns:1fr; } }
+.hire { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); padding:24px 26px; }
+.hire-lbl { font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--text-4); margin-bottom:10px; }
+.hire-range { font-family:'Cormorant Garamond',serif; font-size:24px; color:var(--gold-pale); line-height:1; margin-bottom:16px; }
+.hire ul { list-style:none; }
+.hire li { font-size:12.5px; color:var(--text-2); padding:6px 0; border-bottom:1px solid var(--div); display:flex; gap:12px; }
+.hire li:last-child { border:none; }
+.hire li::before { content:'·'; color:var(--gold); }
+
+/* RULE */
+.rule { background:var(--bg-card); border:1px solid var(--div); border-left:2px solid var(--gold); border-radius:var(--r); padding:24px 28px; margin-bottom:10px; }
+.rule p { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; color:var(--text); line-height:1.45; }
+.rule p em { font-style:italic; color:var(--gold-lt); }
+
+/* 2-COL */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+@media(max-width:560px){ .two-col { grid-template-columns:1fr; } }
+.ic { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); padding:24px 26px; }
+.ic-title { font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+.ir { display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--div); font-size:12px; }
+.ir:last-child { border:none; }
+.ir-k { color:var(--text-3); }
+.ir-v { color:var(--text-2); }
+
+/* ECOM */
+.ecom { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); padding:28px 28px; margin-bottom:10px; }
+.ecom-row { display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--div); font-size:13px; }
+.ecom-row:last-child { border:none; }
+.ecom-k { color:var(--text-3); }
+.ecom-v { color:var(--text-2); }
+.ecom-v.hl { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:300; color:var(--gold-pale); }
+
+/* RISKS */
+.risk { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); padding:22px 24px; margin-bottom:8px; display:flex; gap:20px; align-items:flex-start; }
+.risk-n { font-family:'Cormorant Garamond',serif; font-size:30px; color:var(--text-4); line-height:1; flex-shrink:0; padding-top:2px; min-width:20px; }
+.risk-body strong { display:block; color:var(--text); font-weight:500; font-size:13px; margin-bottom:4px; }
+.risk-body p { color:var(--text-2); font-size:12.5px; }
+
+/* DISC */
+.disc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
+@media(max-width:500px){ .disc-grid { grid-template-columns:repeat(2,1fr); } }
+.disc { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); padding:20px 16px; text-align:center; }
+.disc-icon { font-size:18px; margin-bottom:10px; opacity:.75; }
+.disc-text { font-size:11px; color:var(--text-2); line-height:1.55; }
+
+/* LADDER */
+.ladder { margin-bottom:10px; }
+.rung { display:flex; gap:20px; align-items:stretch; margin-bottom:8px; }
+.rung-line { width:2px; background:linear-gradient(to bottom,var(--gold),rgba(201,169,110,.15)); flex-shrink:0; border-radius:2px; margin-top:8px; }
+.rung-body { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); padding:20px 24px; flex:1; transition:border-color .2s; }
+.rung-body:hover { border-color:var(--gold-line); }
+.rung-lbl { font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--text-4); margin-bottom:6px; }
+.rung-num { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:var(--gold-pale); line-height:1; }
+.rung-sub { font-size:12px; color:var(--text-2); margin-top:6px; line-height:1.65; }
+
+/* COMPARE */
+.cmp { background:var(--bg-card); border:1px solid var(--div); border-radius:var(--r); overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:10px; }
+.cmp table { width:100%; border-collapse:collapse; min-width:320px; }
+.cmp th { padding:12px 20px; text-align:left; font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-3); background:var(--bg-card2); border-bottom:1px solid var(--div); font-weight:500; white-space:nowrap; }
+.cmp td { padding:11px 20px; font-size:12px; color:var(--text-2); border-bottom:1px solid var(--div); white-space:nowrap; }
+.cmp tr:last-child td { border:none; }
+.cmp td:first-child { color:var(--text); }
+
+/* NOTE */
+.note { background:var(--bg-inset); border:1px solid var(--div); border-radius:var(--r); padding:16px 20px; margin-bottom:10px; }
+.note p { font-size:12px; color:var(--text-3); line-height:1.7; }
+.note p strong { color:var(--text-2); font-weight:500; }
+
+/* FINAL */
+.final { background:var(--bg-card); border:1px solid var(--gold-line); border-radius:var(--r); padding:48px 32px; text-align:center; margin-bottom:10px; }
+.final h2 { font-family:'Cormorant Garamond',serif; font-size:34px; font-weight:300; color:var(--text); margin-bottom:16px; line-height:1.2; }
+.final h2 em { font-style:italic; color:var(--gold-lt); }
+.final p { color:var(--text-2); font-size:12.5px; max-width:420px; margin:0 auto 8px; }
+.final-tag { display:inline-block; margin-top:20px; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); border:1px solid var(--gold-line); padding:7px 18px; border-radius:var(--r); }
+
+/* UP */
+.up { position:fixed; bottom:24px; right:24px; width:36px; height:36px; background:var(--bg-card); border:1px solid var(--gold-line); border-radius:var(--r); color:var(--gold); font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .25s; z-index:400; }
+.up.vis { opacity:1; pointer-events:auto; }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <span class="hdr-logo">Agai Actions · Brand Intelligence HQ</span>
+  <span class="hdr-badge">06 · Масштабирование</span>
+</header>
+
+<nav class="nav-wrap">
+  <div class="nav">
+    <button class="tab on"  data-t="goal">Цель</button>
+    <button class="tab"     data-t="sc">Сценарии</button>
+    <button class="tab"     data-t="budget">Бюджет</button>
+    <button class="tab"     data-t="hire">Найм</button>
+    <button class="tab"     data-t="cars">Автопарк</button>
+    <button class="tab"     data-t="show">Шоурум</button>
+    <button class="tab"     data-t="ecom">E-commerce</button>
+    <button class="tab"     data-t="risk">Риски</button>
+    <button class="tab"     data-t="disc">Дисциплина</button>
+    <button class="tab"     data-t="strat">Стратегия</button>
+    <button class="tab"     data-t="scale">Масштаб</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">Блок 06 · Финансы, бюджет и модель роста</div>
+  <h1 class="hero-title">Numbers — <em>Реальная экономика</em></h1>
+  <p class="hero-desc">Финансовая цель, P&amp;L по трём сценариям, стратегия найма и долгосрочный план масштабирования Agai Actions до национального уровня.</p>
+</div>
+
+<!-- ══ ЦЕЛЬ ══ -->
+<section class="sec on" id="s-goal">
+  <div class="sec-hd">
+    <div class="sec-eye">01 · Финансовая цель</div>
+    <h2 class="sec-title">Основные <em>ориентиры</em></h2>
+  </div>
+
+  <div class="goal-hl">
+    <div class="lbl">Основная цель</div>
+    <div class="big">$30,000+</div>
+    <div class="sub-text">чистой прибыли в месяц</div>
+  </div>
+
+  <div class="lc">
+    <div class="lbl">Долгосрочная цель</div>
+    <ul>
+      <li>Масштаб до 45+ проектов в месяц</li>
+      <li>Построение системного бизнеса</li>
+      <li>Независимость от ручного управления</li>
+    </ul>
+  </div>
+
+  <div class="lc">
+    <div class="lbl">Два направления бизнеса</div>
+    <ul>
+      <li><strong>Service</strong> — подбор, продажа, подготовка и установка обоев</li>
+      <li><strong>E-commerce</strong> — продажа обоев через сайт, масштабируемый канал</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <p><strong>Входные данные:</strong> обои $88 закупка / $210 продажа (double roll) · бригада $900/день (установщик $375 + подготовщик $375 + хелпер $150) · CAC $80 · 1 бригада = 15–20 проектов/месяц</p>
+  </div>
+</section>
+
+<!-- ══ СЦЕНАРИИ ══ -->
+<section class="sec" id="s-sc">
+  <div class="sec-hd">
+    <div class="sec-eye">02 · Сценарии роста · сдельная модель</div>
+    <h2 class="sec-title">Три <em>этапа</em></h2>
+  </div>
+
+  <!-- формула -->
+  <div class="formula">
+    <div class="lbl" style="margin-bottom:10px;">Логика расчёта</div>
+    <div class="formula-inner">
+      <span class="f-item">Прибыль с проектов (микс 50/50)</span>
+      <span class="f-op">−</span>
+      <span class="f-item">Фикс. расходы бизнеса</span>
+      <span class="f-op">=</span>
+      <span class="f-result">Чистая прибыль</span>
+    </div>
+  </div>
+
+  <div class="sc-grid">
+    <!-- 15 проектов: прибыль $27,375 − фикс $25,400 = $1,975 -->
+    <div class="sc">
+      <div class="sc-top"><div class="sc-badge">1</div><div><div class="sc-name">База</div><div class="sc-sub">15 проектов · 1 бригада</div></div></div>
+      <div class="sc-rows">
+        <div class="sc-row"><span class="sc-rk">Прибыль с проектов (микс)</span><span class="sc-rv">$27,375</span></div>
+        <div class="sc-row"><span class="sc-rk">Фикс. расходы</span><span class="sc-rv">− $25,400</span></div>
+        <div class="sc-profit">
+          <div class="sc-plbl">Чистая прибыль</div>
+          <div class="sc-pval">~$1,975</div>
+        </div>
+      </div>
+    </div>
+    <!-- 30 проектов: прибыль $54,750 − фикс $37,800 = $16,950 -->
+    <div class="sc">
+      <div class="sc-top"><div class="sc-badge">2</div><div><div class="sc-name">Рост</div><div class="sc-sub">30 проектов · 2 бригады</div></div></div>
+      <div class="sc-rows">
+        <div class="sc-row"><span class="sc-rk">Прибыль с проектов (микс)</span><span class="sc-rv">$54,750</span></div>
+        <div class="sc-row"><span class="sc-rk">Фикс. расходы</span><span class="sc-rv">− $37,800</span></div>
+        <div class="sc-profit">
+          <div class="sc-plbl">Чистая прибыль</div>
+          <div class="sc-pval">~$16,950</div>
+        </div>
+      </div>
+    </div>
+    <!-- 45 проектов: прибыль $80,300 − фикс $50,200 = $30,100 -->
+    <div class="sc">
+      <div class="sc-top"><div class="sc-badge">3</div><div><div class="sc-name">Масштаб</div><div class="sc-sub">45 проектов · 3 бригады</div></div></div>
+      <div class="sc-rows">
+        <div class="sc-row"><span class="sc-rk">Прибыль с проектов (микс)</span><span class="sc-rv">$80,300</span></div>
+        <div class="sc-row"><span class="sc-rk">Фикс. расходы</span><span class="sc-rv">− $50,200</span></div>
+        <div class="sc-profit">
+          <div class="sc-plbl">Чистая прибыль</div>
+          <div class="sc-pval">~$30,100</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><strong>Прибыль с проектов</strong> — это выручка минус себестоимость обоев, расходников, переделок, CAC и сдельная оплата бригады. <strong>Фикс. расходы</strong> — менеджер, авто, маркетинг, контент, CRM, бензин, образцы. Подробнее — вкладка «Бюджет».</p>
+  </div>
+</section>
+
+<!-- ══ БЮДЖЕТ ══ -->
+<section class="sec" id="s-budget">
+  <div class="sec-hd">
+    <div class="sec-eye">03 · Полный P&amp;L · сдельная модель</div>
+    <h2 class="sec-title">Структура <em>расходов</em></h2>
+  </div>
+
+  <div class="bt-wrap">
+    <table class="bt">
+      <thead>
+        <tr>
+          <th>Статья</th>
+          <th>15 проектов</th>
+          <th>30 проектов</th>
+          <th>45 проектов</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="g"><td colspan="4">Прибыль с проектов (до фикс. расходов)</td></tr>
+        <tr><td>Микс 50/50 · из unit economics</td><td>$27,375</td><td>$54,750</td><td>$80,300</td></tr>
+
+        <tr class="g"><td colspan="4">Фиксированные расходы</td></tr>
+        <tr><td>Менеджер (оклад)</td><td>$6,000</td><td>$6,000</td><td>$6,000</td></tr>
+        <tr><td>Авто · лизинг $850 + страховка $400 + мойка $100 + ТО $33</td><td>$1,400</td><td>$2,800</td><td>$4,200</td></tr>
+        <tr><td>Маркетинг (+$2,000 за каждую бригаду)</td><td>$5,000</td><td>$7,000</td><td>$9,000</td></tr>
+        <tr><td>Контент</td><td>$4,000</td><td>$4,000</td><td>$4,000</td></tr>
+        <tr><td>CRM / Софт / Бухгалтерия</td><td>$2,000</td><td>$2,000</td><td>$2,000</td></tr>
+        <tr><td>Бензин</td><td>$3,000</td><td>$4,000</td><td>$5,000</td></tr>
+        <tr><td>Образцы</td><td>$2,000</td><td>$2,000</td><td>$2,000</td></tr>
+
+        <tr class="tot"><td>Итого фикс. расходы</td><td>$25,400</td><td>$37,800</td><td>$50,200</td></tr>
+        <tr class="prf"><td>Чистая прибыль</td><td>~$1,975</td><td>~$16,950</td><td>~$30,100</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <p><strong>Маркетинг растёт</strong> с каждой бригадой: больше бригад = нужен больший поток лидов. <strong>Авто:</strong> $1,400/мес на машину (лизинг + страховка + мойка + ТО). <strong>Бензин</strong> растёт пропорционально количеству машин и выездов.</p>
+  </div>
+</section>
+
+<!-- ══ НАЙМ ══ -->
+<section class="sec" id="s-hire">
+  <div class="sec-hd">
+    <div class="sec-eye">04 · Стратегия найма</div>
+    <h2 class="sec-title">Люди — <em>по потоку</em></h2>
+  </div>
+
+  <div class="hire-grid">
+    <div class="hire">
+      <div class="hire-lbl">Этап 1 — Старт</div>
+      <div class="hire-range">До 15 проектов</div>
+      <ul>
+        <li>1 бригада (сдельно)</li>
+        <li>Дизайнер внештатный</li>
+        <li>Продажи — основатели (Рахман и Арам)</li>
+      </ul>
+    </div>
+    <div class="hire">
+      <div class="hire-lbl">Этап 2 — Рост</div>
+      <div class="hire-range">15–30 проектов</div>
+      <ul>
+        <li>2 бригады</li>
+        <li>Дизайнер в штат</li>
+        <li>Менеджер продаж — нанять</li>
+      </ul>
+    </div>
+    <div class="hire">
+      <div class="hire-lbl">Этап 3 — Масштаб</div>
+      <div class="hire-range">30–45 проектов</div>
+      <ul>
+        <li>3 бригады</li>
+        <li>Полный отдел продаж</li>
+        <li>Системный процесс</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="rule"><p>Правило: <em>нанимать только под реальный подтверждённый поток</em></p></div>
+</section>
+
+<!-- ══ АВТОПАРК ══ -->
+<section class="sec" id="s-cars">
+  <div class="sec-hd">
+    <div class="sec-eye">05 · Автопарк</div>
+    <h2 class="sec-title">Расходы на <em>1 машину</em></h2>
+  </div>
+
+  <div class="car-detail">
+    <div class="lbl">Состав расходов · 1 автомобиль / месяц</div>
+    <div class="cdr"><span class="cdr-k">Лизинг</span><span class="cdr-v">$850</span></div>
+    <div class="cdr"><span class="cdr-k">Страховка</span><span class="cdr-v">$400</span></div>
+    <div class="cdr"><span class="cdr-k">Мойка</span><span class="cdr-v">$100</span></div>
+    <div class="cdr"><span class="cdr-k">Обслуживание ($400 / год ÷ 12)</span><span class="cdr-v">~$33</span></div>
+    <div class="cdr-total">
+      <span class="cdr-tk">Итого на 1 машину</span>
+      <span class="cdr-tv">$1,400 / мес</span>
+    </div>
+  </div>
+
+  <div class="cars-grid">
+    <div class="car"><div class="car-icon">🚗</div><div class="car-lbl">1 машина</div><div class="car-val">$1,400 / мес</div></div>
+    <div class="car"><div class="car-icon">🚗🚗</div><div class="car-lbl">2 машины</div><div class="car-val">$2,800 / мес</div></div>
+    <div class="car"><div class="car-icon">🚗🚗🚗</div><div class="car-lbl">3 машины</div><div class="car-val">$4,200 / мес</div></div>
+  </div>
+
+  <div class="rule"><p><em>Вводить постепенно</em> — только при стабильном потоке заказов</p></div>
+</section>
+
+<!-- ══ ШОУРУМ ══ -->
+<section class="sec" id="s-show">
+  <div class="sec-hd">
+    <div class="sec-eye">06 · Шоурум</div>
+    <h2 class="sec-title">Только после <em>стабильных продаж</em></h2>
+  </div>
+
+  <div class="two-col">
+    <div class="ic">
+      <div class="ic-title">Параметры</div>
+      <div class="ir"><span class="ir-k">Аренда</span><span class="ir-v">~$3,000 / мес</span></div>
+      <div class="ir"><span class="ir-k">Содержание</span><span class="ir-v">~$1,000 / мес</span></div>
+      <div class="ir"><span class="ir-k">Вложения на запуск</span><span class="ir-v">$15,000–$25,000</span></div>
+    </div>
+    <div class="ic">
+      <div class="ic-title">Функция</div>
+      <div class="ir"><span class="ir-k">Конверсия</span><span class="ir-v">Повышает</span></div>
+      <div class="ir"><span class="ir-k">Средний чек</span><span class="ir-v">Увеличивает</span></div>
+      <div class="ir"><span class="ir-k">Условие запуска</span><span class="ir-v">Стабильные продажи</span></div>
+    </div>
+  </div>
+
+  <div class="rule"><p>Шоурум — <em>только после стабильных продаж</em></p></div>
+</section>
+
+<!-- ══ E-COMMERCE ══ -->
+<section class="sec" id="s-ecom">
+  <div class="sec-hd">
+    <div class="sec-eye">07 · Онлайн-продажа обоев</div>
+    <h2 class="sec-title">E-commerce — <em>~58% маржа</em></h2>
+  </div>
+
+  <div class="ecom">
+    <div class="ecom-row"><span class="ecom-k">Закупка (1 double roll)</span><span class="ecom-v">$88</span></div>
+    <div class="ecom-row"><span class="ecom-k">Продажа (1 double roll)</span><span class="ecom-v">$210</span></div>
+    <div class="ecom-row"><span class="ecom-k">Маржа с рулона</span><span class="ecom-v">$122 · ~58%</span></div>
+    <div class="ecom-row"><span class="ecom-k">Доп. прибыль с проекта (10 рул.)</span><span class="ecom-v hl">$1,220</span></div>
+  </div>
+
+  <div class="lc">
+    <div class="lbl">Роль в бизнесе</div>
+    <ul>
+      <li>+$1,220 к каждому проекту — существенно увеличивает итоговую маржу</li>
+      <li>Генерация лидов на услугу установки</li>
+      <li>Масштабируемый онлайн-канал без дополнительных бригад</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <p><strong>Ключевой драйвер:</strong> менеджер направляет выбор клиента к нужным брендам органично. Чем выше продажи обоев — тем выше доход и менеджера, и компании.</p>
+  </div>
+</section>
+
+<!-- ══ РИСКИ ══ -->
+<section class="sec" id="s-risk">
+  <div class="sec-hd">
+    <div class="sec-eye">08 · Финансовые риски</div>
+    <h2 class="sec-title">Что <em>угрожает</em> прибыли</h2>
+  </div>
+
+  <div class="risk"><div class="risk-n">1</div><div class="risk-body"><strong>Недостаток заказов</strong><p>Главный риск. Без стабильного потока фиксированные расходы делают бизнес убыточным. Решение: системный маркетинг, Instagram, Google, рефералы.</p></div></div>
+  <div class="risk"><div class="risk-n">2</div><div class="risk-body"><strong>Рост стоимости лида (CAC)</strong><p>CAC $80 — текущая база. Рост конкуренции или изменение алгоритмов могут её поднять. Решение: диверсификация каналов, органика.</p></div></div>
+  <div class="risk"><div class="risk-n">3</div><div class="risk-body"><strong>Рост переделок</strong><p>Переделки заложены как 10% от работ. Если качество падает — это прямо съедает прибыль. Решение: стандарты установки, обучение бригады.</p></div></div>
+  <div class="risk"><div class="risk-n">4</div><div class="risk-body"><strong>Простой бригад</strong><p>Неравномерный поток = оплата менеджера и аренда авто без выручки. Решение: гибкий сдельный график бригады.</p></div></div>
+  <div class="risk"><div class="risk-n">5</div><div class="risk-body"><strong>Ранний найм</strong><p>Добавление бригады без подтверждённого потока = фиксированные расходы без гарантии дохода. Решение: нанимать только под реальный спрос.</p></div></div>
+</section>
+
+<!-- ══ ДИСЦИПЛИНА ══ -->
+<section class="sec" id="s-disc">
+  <div class="sec-hd">
+    <div class="sec-eye">09 · Финансовая дисциплина</div>
+    <h2 class="sec-title">Основные <em>правила</em></h2>
+  </div>
+
+  <div class="disc-grid">
+    <div class="disc"><div class="disc-icon">📊</div><div class="disc-text">Считать прибыль каждого проекта отдельно</div></div>
+    <div class="disc"><div class="disc-icon">🔀</div><div class="disc-text">Контролировать микс 500 и 300 sq.ft</div></div>
+    <div class="disc"><div class="disc-icon">🛒</div><div class="disc-text">Продавать обои — +$1,220 с каждого проекта</div></div>
+    <div class="disc"><div class="disc-icon">🚫</div><div class="disc-text">Не раздувать расходы до стабильного потока</div></div>
+    <div class="disc"><div class="disc-icon">👥</div><div class="disc-text">Нанимать только под реальный поток</div></div>
+    <div class="disc"><div class="disc-icon">⚠️</div><div class="disc-text">Минимизировать переделки — до 10% выручки</div></div>
+    <div class="disc"><div class="disc-icon">💰</div><div class="disc-text">Не демпинговать — удерживать цену работ</div></div>
+  </div>
+</section>
+
+<!-- ══ СТРАТЕГИЯ ══ -->
+<section class="sec" id="s-strat">
+  <div class="sec-hd">
+    <div class="sec-eye">10 · Ключевая стратегия</div>
+    <h2 class="sec-title">База → Рост → <em>Масштаб</em></h2>
+  </div>
+
+  <div class="ladder">
+    <div class="rung">
+      <div class="rung-line"></div>
+      <div class="rung-body">
+        <div class="rung-lbl">База · 1 бригада</div>
+        <div class="rung-num">15 проектов</div>
+        <div class="rung-sub">Чистая ~$1,975 / мес · основатели ведут продажи сами · фикс. $25,400</div>
+      </div>
+    </div>
+    <div class="rung">
+      <div class="rung-line"></div>
+      <div class="rung-body">
+        <div class="rung-lbl">Рост · 2 бригады</div>
+        <div class="rung-num">30 проектов</div>
+        <div class="rung-sub">Чистая ~$16,950 / мес · дизайнер в штат · менеджер продаж · фикс. $37,800</div>
+      </div>
+    </div>
+    <div class="rung">
+      <div class="rung-line"></div>
+      <div class="rung-body">
+        <div class="rung-lbl">Масштаб · 3 бригады</div>
+        <div class="rung-num">45 проектов</div>
+        <div class="rung-sub">Чистая ~$30,100 / мес · полный отдел продаж · системный процесс · фикс. $50,200</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule"><p>Главная задача: <em>стабилизировать поток</em> и продавать обои с каждым проектом</p></div>
+</section>
+
+<!-- ══ МАСШТАБ ══ -->
+<section class="sec" id="s-scale">
+  <div class="sec-hd">
+    <div class="sec-eye">11 · Долгосрочная стратегия</div>
+    <h2 class="sec-title">Национальный <em>масштаб</em></h2>
+  </div>
+
+  <div class="lc" style="margin-bottom:10px;">
+    <div class="lbl">Основная долгосрочная цель</div>
+    <ul>
+      <li>Системная компания с возможностью масштабирования на уровне страны</li>
+      <li>Не локальный сервис — а тиражируемая модель бизнеса</li>
+    </ul>
+  </div>
+
+  <div class="sc-grid" style="margin-bottom:10px;">
+    <div class="sc">
+      <div class="sc-top"><div class="sc-badge" style="font-size:9px;letter-spacing:.04em;">FR</div><div><div class="sc-name">Франчайзинг</div><div class="sc-sub">Продажа франшизы в города и штаты</div></div></div>
+      <div class="sc-rows">
+        <div class="sc-row"><span class="sc-rk">Скорость роста</span><span class="sc-rv">Высокая</span></div>
+        <div class="sc-row"><span class="sc-rk">Инвестиции</span><span class="sc-rv">Ниже</span></div>
+        <div class="sc-row"><span class="sc-rk">Контроль</span><span class="sc-rv">Ниже</span></div>
+        <div class="sc-row"><span class="sc-rk">Прибыль с точки</span><span class="sc-rv">Ниже</span></div>
+      </div>
+    </div>
+    <div class="sc">
+      <div class="sc-top"><div class="sc-badge" style="font-size:9px;letter-spacing:.04em;">FI</div><div><div class="sc-name">Сеть филиалов</div><div class="sc-sub">Открытие подразделений в штатах</div></div></div>
+      <div class="sc-rows">
+        <div class="sc-row"><span class="sc-rk">Скорость роста</span><span class="sc-rv">Ниже</span></div>
+        <div class="sc-row"><span class="sc-rk">Инвестиции</span><span class="sc-rv">Выше</span></div>
+        <div class="sc-row"><span class="sc-rk">Контроль</span><span class="sc-rv">Выше</span></div>
+        <div class="sc-row"><span class="sc-rk">Прибыль с точки</span><span class="sc-rv">Выше</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cmp" style="margin-bottom:10px;">
+    <table>
+      <thead><tr><th>Параметр</th><th>Франшиза</th><th>Филиалы</th></tr></thead>
+      <tbody>
+        <tr><td>Контроль</td><td>Ниже</td><td>Выше</td></tr>
+        <tr><td>Скорость роста</td><td>Выше</td><td>Ниже</td></tr>
+        <tr><td>Инвестиции</td><td>Ниже</td><td>Выше</td></tr>
+        <tr><td>Прибыль с точки</td><td>Ниже</td><td>Выше</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="rule" style="margin-bottom:10px;">
+    <p>Текущий приоритет: <em>построение системы внутри одного рынка</em> (Los Angeles)</p>
+  </div>
+
+  <div class="final">
+    <h2>Agai Actions — это <em>не сервис</em></h2>
+    <p>Масштабируемая система с потенциалом национального роста.</p>
+    <p>Высокая маржа · сильная экономика · успех зависит от системы и потока заказов.</p>
+    <div class="final-tag">Los Angeles → USA</div>
+  </div>
+</section>
+
+<button class="up" id="up">↑</button>
+
+<script>
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+      document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+      btn.classList.add('on');
+      document.getElementById('s-' + btn.dataset.t).classList.add('on');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+  const upBtn = document.getElementById('up');
+  window.addEventListener('scroll', () => upBtn.classList.toggle('vis', scrollY > 260));
+  upBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+</body>
+</html>
